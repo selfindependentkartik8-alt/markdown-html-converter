@@ -2,114 +2,93 @@
 
 import { useState } from "react";
 
+type Mode = "markdown-to-html" | "html-to-markdown";
+
 export default function Home() {
-  const [markdown, setMarkdown] = useState("");
-  const [html, setHtml] = useState("");
+  const [mode, setMode] = useState<Mode>("markdown-to-html");
+  const [input, setInput] = useState("");
+  const [result, setResult] = useState("");
   const [copied, setCopied] = useState(false);
 
-  const convertMarkdown = () => {
-    if (!markdown.trim()) {
-      setHtml("");
-      return;
-    }
-
-    let output = markdown;
-
-    // Escape HTML first
-    output = output
+  const markdownToHtml = (markdown: string) => {
+    let output = markdown
       .replace(/&/g, "&amp;")
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;");
 
-    // Code blocks
     output = output.replace(
       /```([\s\S]*?)```/g,
       (_, code) => `<pre><code>${code.trim()}</code></pre>`
     );
 
-    // Headings
-    output = output.replace(
-      /^###### (.*)$/gm,
-      "<h6>$1</h6>"
-    );
+    output = output.replace(/^###### (.*)$/gm, "<h6>$1</h6>");
+    output = output.replace(/^##### (.*)$/gm, "<h5>$1</h5>");
+    output = output.replace(/^#### (.*)$/gm, "<h4>$1</h4>");
+    output = output.replace(/^### (.*)$/gm, "<h3>$1</h3>");
+    output = output.replace(/^## (.*)$/gm, "<h2>$1</h2>");
+    output = output.replace(/^# (.*)$/gm, "<h1>$1</h1>");
 
-    output = output.replace(
-      /^##### (.*)$/gm,
-      "<h5>$1</h5>"
-    );
-
-    output = output.replace(
-      /^#### (.*)$/gm,
-      "<h4>$1</h4>"
-    );
-
-    output = output.replace(
-      /^### (.*)$/gm,
-      "<h3>$1</h3>"
-    );
-
-    output = output.replace(
-      /^## (.*)$/gm,
-      "<h2>$1</h2>"
-    );
-
-    output = output.replace(
-      /^# (.*)$/gm,
-      "<h1>$1</h1>"
-    );
-
-    // Bold
-    output = output.replace(
-      /\*\*(.*?)\*\*/g,
-      "<strong>$1</strong>"
-    );
-
-    // Italic
-    output = output.replace(
-      /\*(.*?)\*/g,
-      "<em>$1</em>"
-    );
-
-    // Inline code
-    output = output.replace(
-      /`([^`]+)`/g,
-      "<code>$1</code>"
-    );
-
-    // Links
     output = output.replace(
       /\[([^\]]+)\]\(([^)]+)\)/g,
       '<a href="$2">$1</a>'
     );
 
-    // Unordered lists
+    output = output.replace(
+      /\*\*(.*?)\*\*/g,
+      "<strong>$1</strong>"
+    );
+
+    output = output.replace(
+      /__(.*?)__/g,
+      "<strong>$1</strong>"
+    );
+
+    output = output.replace(
+      /\*([^*\n]+)\*/g,
+      "<em>$1</em>"
+    );
+
+    output = output.replace(
+      /_([^_\n]+)_/g,
+      "<em>$1</em>"
+    );
+
+    output = output.replace(
+      /`([^`]+)`/g,
+      "<code>$1</code>"
+    );
+
+    output = output.replace(
+      /^> (.*)$/gm,
+      "<blockquote>$1</blockquote>"
+    );
+
+    output = output.replace(
+      /^---$/gm,
+      "<hr />"
+    );
+
     output = output.replace(
       /^(?:-|\*) (.*)$/gm,
       "<li>$1</li>"
     );
 
     output = output.replace(
-      /(<li>.*<\/li>)/gs,
+      /(<li>.*<\/li>)(?:\n|$)/g,
+      "$1"
+    );
+
+    output = output.replace(
+      /((?:<li>.*<\/li>)+)/g,
       "<ul>$1</ul>"
     );
 
-    // Blockquotes
-    output = output.replace(
-      /^> (.*)$/gm,
-      "<blockquote>$1</blockquote>"
-    );
-
-    // Horizontal rule
-    output = output.replace(
-      /^---$/gm,
-      "<hr />"
-    );
-
-    // Paragraphs / line breaks
     output = output
       .split(/\n{2,}/)
       .map((block) => {
         const trimmed = block.trim();
+
+        if (!trimmed) return "";
 
         if (
           trimmed.startsWith("<h") ||
@@ -121,38 +100,177 @@ export default function Home() {
           return trimmed;
         }
 
-        return trimmed
-          ? `<p>${trimmed.replace(/\n/g, "<br />")}</p>`
-          : "";
+        return `<p>${trimmed.replace(/\n/g, "<br />")}</p>`;
       })
       .filter(Boolean)
       .join("\n");
 
-    setHtml(output);
+    return output;
+  };
+
+  const htmlToMarkdown = (html: string) => {
+    let output = html.trim();
+
+    output = output.replace(/\r\n/g, "\n");
+
+    output = output.replace(
+      /<h1[^>]*>([\s\S]*?)<\/h1>/gi,
+      "# $1\n\n"
+    );
+
+    output = output.replace(
+      /<h2[^>]*>([\s\S]*?)<\/h2>/gi,
+      "## $1\n\n"
+    );
+
+    output = output.replace(
+      /<h3[^>]*>([\s\S]*?)<\/h3>/gi,
+      "### $1\n\n"
+    );
+
+    output = output.replace(
+      /<h4[^>]*>([\s\S]*?)<\/h4>/gi,
+      "#### $1\n\n"
+    );
+
+    output = output.replace(
+      /<h5[^>]*>([\s\S]*?)<\/h5>/gi,
+      "##### $1\n\n"
+    );
+
+    output = output.replace(
+      /<h6[^>]*>([\s\S]*?)<\/h6>/gi,
+      "###### $1\n\n"
+    );
+
+    output = output.replace(
+      /<strong[^>]*>([\s\S]*?)<\/strong>/gi,
+      "**$1**"
+    );
+
+    output = output.replace(
+      /<b[^>]*>([\s\S]*?)<\/b>/gi,
+      "**$1**"
+    );
+
+    output = output.replace(
+      /<em[^>]*>([\s\S]*?)<\/em>/gi,
+      "*$1*"
+    );
+
+    output = output.replace(
+      /<i[^>]*>([\s\S]*?)<\/i>/gi,
+      "*$1*"
+    );
+
+    output = output.replace(
+      /<code[^>]*>([\s\S]*?)<\/code>/gi,
+      "`$1`"
+    );
+
+    output = output.replace(
+      /<a[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi,
+      "[$2]($1)"
+    );
+
+    output = output.replace(
+      /<blockquote[^>]*>([\s\S]*?)<\/blockquote>/gi,
+      (_, content) => {
+        const clean = stripTags(content).trim();
+
+        return clean
+          .split("\n")
+          .map((line: string) => `> ${line}`)
+          .join("\n") + "\n\n";
+      }
+    );
+
+    output = output.replace(
+      /<li[^>]*>([\s\S]*?)<\/li>/gi,
+      "- $1\n"
+    );
+
+    output = output.replace(
+      /<\/?(?:ul|ol)[^>]*>/gi,
+      ""
+    );
+
+    output = output.replace(
+      /<br\s*\/?>/gi,
+      "\n"
+    );
+
+    output = output.replace(
+      /<hr\s*\/?>/gi,
+      "\n---\n\n"
+    );
+
+    output = output.replace(
+      /<p[^>]*>([\s\S]*?)<\/p>/gi,
+      "$1\n\n"
+    );
+
+    output = output.replace(
+      /<pre[^>]*>\s*<code[^>]*>([\s\S]*?)<\/code>\s*<\/pre>/gi,
+      (_, content) => {
+        return `\`\`\`\n${stripTags(content).trim()}\n\`\`\`\n\n`;
+      }
+    );
+
+    output = stripTags(output);
+
+    output = decodeHtmlEntities(output);
+
+    output = output
+      .replace(/\n{3,}/g, "\n\n")
+      .trim();
+
+    return output;
+  };
+
+  const handleConvert = () => {
+    if (!input.trim()) {
+      setResult("");
+      return;
+    }
+
+    if (mode === "markdown-to-html") {
+      setResult(markdownToHtml(input));
+    } else {
+      setResult(htmlToMarkdown(input));
+    }
+
     setCopied(false);
   };
 
-  const copyHtml = async () => {
-    if (!html) return;
+  const handleCopy = async () => {
+    if (!result) return;
 
-    await navigator.clipboard.writeText(html);
+    await navigator.clipboard.writeText(result);
     setCopied(true);
 
-    setTimeout(() => setCopied(false), 1800);
+    setTimeout(() => {
+      setCopied(false);
+    }, 1800);
   };
 
-  const clearAll = () => {
-    setMarkdown("");
-    setHtml("");
+  const handleClear = () => {
+    setInput("");
+    setResult("");
+    setCopied(false);
+  };
+
+  const switchMode = (newMode: Mode) => {
+    setMode(newMode);
+    setInput("");
+    setResult("");
     setCopied(false);
   };
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-gradient-to-b from-orange-950 via-orange-950/60 via-[35%] to-[#080706] text-white">
 
-      {/* ========================================================= */}
-      {/* BACKGROUND */}
-      {/* ========================================================= */}
+      {/* BACKGROUND GLOW */}
 
       <div className="pointer-events-none absolute left-1/2 top-[-280px] h-[650px] w-[900px] -translate-x-1/2 rounded-full bg-orange-500/25 blur-[170px]" />
 
@@ -162,9 +280,7 @@ export default function Home() {
 
       <div className="pointer-events-none absolute left-1/2 top-[72%] h-[500px] w-[700px] -translate-x-1/2 rounded-full bg-orange-500/[0.04] blur-[160px]" />
 
-      {/* ========================================================= */}
       {/* NAVBAR */}
-      {/* ========================================================= */}
 
       <nav className="relative z-30 mx-auto w-full max-w-6xl px-4 pt-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between rounded-2xl border border-white/[0.08] bg-black/35 px-4 py-3 shadow-2xl shadow-black/30 backdrop-blur-2xl sm:px-5">
@@ -233,14 +349,12 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* ========================================================= */}
       {/* HERO */}
-      {/* ========================================================= */}
 
       <section className="relative z-10 mx-auto flex w-full max-w-6xl flex-col items-center px-5 pb-20 pt-20 text-center sm:px-8 sm:pt-24">
 
         <div className="rounded-full border border-orange-400/20 bg-orange-500/10 px-4 py-2 text-xs text-orange-200 shadow-lg shadow-orange-950/30 backdrop-blur-xl">
-          ✨ Markdown → HTML Converter
+          ✨ Markdown ↔ HTML Converter
         </div>
 
         <p className="mt-4 text-xs text-zinc-500">
@@ -251,16 +365,16 @@ export default function Home() {
         </p>
 
         <h1 className="mt-7 max-w-4xl text-4xl font-extrabold leading-[1.08] tracking-tight sm:text-6xl lg:text-7xl">
-          Write Markdown.
+          Write.
           <br />
           <span className="bg-gradient-to-r from-orange-300 via-amber-400 to-orange-500 bg-clip-text text-transparent">
-            Get Clean HTML.
+            Convert. Simplify.
           </span>
         </h1>
 
         <p className="mt-6 max-w-2xl text-sm leading-7 text-zinc-400 sm:text-base sm:leading-8">
-          Convert Markdown into clean HTML instantly with a simple,
-          fast and developer-friendly converter.
+          Convert Markdown to HTML or HTML back to Markdown with a simple,
+          fast and developer-friendly tool.
         </p>
 
         <div className="mt-7 flex flex-wrap justify-center gap-2.5">
@@ -277,9 +391,7 @@ export default function Home() {
           </span>
         </div>
 
-        {/* ========================================================= */}
         {/* CONVERTER */}
-        {/* ========================================================= */}
 
         <div
           id="converter"
@@ -289,72 +401,120 @@ export default function Home() {
 
             <div className="mb-6 text-left">
               <h2 className="text-lg font-semibold text-white sm:text-xl">
-                Markdown Converter
+                Markdown ↔ HTML Converter
               </h2>
 
               <p className="mt-1 text-xs text-zinc-500 sm:text-sm">
-                Write or paste Markdown and convert it into HTML.
+                Choose a direction and convert your content instantly.
               </p>
+            </div>
+
+            {/* MODE */}
+
+            <div className="mb-6 flex w-full rounded-2xl border border-white/10 bg-white/[0.03] p-1">
+
+              <button
+                onClick={() => switchMode("markdown-to-html")}
+                className={`flex-1 rounded-xl px-4 py-3 text-xs font-bold transition sm:text-sm ${
+                  mode === "markdown-to-html"
+                    ? "bg-orange-500 text-black shadow-lg shadow-orange-500/20"
+                    : "text-zinc-400 hover:text-white"
+                }`}
+              >
+                Markdown → HTML
+              </button>
+
+              <button
+                onClick={() => switchMode("html-to-markdown")}
+                className={`flex-1 rounded-xl px-4 py-3 text-xs font-bold transition sm:text-sm ${
+                  mode === "html-to-markdown"
+                    ? "bg-orange-500 text-black shadow-lg shadow-orange-500/20"
+                    : "text-zinc-400 hover:text-white"
+                }`}
+              >
+                HTML → Markdown
+              </button>
+
             </div>
 
             <div className="grid gap-5 lg:grid-cols-2">
 
-              {/* MARKDOWN INPUT */}
+              {/* INPUT */}
+
               <div className="text-left">
 
-                <div className="mb-3 flex items-center justify-between">
+                <div className="mb-3 flex items-center justify-between gap-3">
                   <p className="text-xs font-bold uppercase tracking-[0.2em] text-orange-400">
-                    Markdown Input
+                    {mode === "markdown-to-html"
+                      ? "Markdown Input"
+                      : "HTML Input"}
                   </p>
 
                   <span className="text-xs text-zinc-600">
-                    {markdown.length} chars
+                    {input.length} chars
                   </span>
                 </div>
 
                 <textarea
-                  value={markdown}
-                  onChange={(e) => setMarkdown(e.target.value)}
-                  placeholder={`# Hello World
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  placeholder={
+                    mode === "markdown-to-html"
+                      ? `# Hello World
 
-Write your markdown here...
+Write your Markdown here...
 
 **Bold text**
 *Italic text*
 
 - List item
-- Another item`}
-                  className="min-h-[320px] w-full resize-y rounded-2xl border border-orange-400/20 bg-black/40 p-5 font-mono text-sm leading-7 text-white placeholder:text-zinc-700 outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-400/20"
+- Another item`
+                      : `<h1>Hello World</h1>
+
+<p>Write your HTML here...</p>
+
+<strong>Bold text</strong>
+
+<ul>
+  <li>List item</li>
+</ul>`
+                  }
+                  className="h-[320px] w-full resize-y overflow-y-auto rounded-2xl border border-orange-400/20 bg-black/40 p-5 font-mono text-sm leading-7 text-white placeholder:text-zinc-700 outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-400/20"
                 />
               </div>
 
-              {/* HTML RESULT */}
+              {/* RESULT */}
+
               <div className="text-left">
 
                 <div className="mb-3 flex items-center justify-between gap-3">
                   <p className="text-xs font-bold uppercase tracking-[0.2em] text-orange-400">
-                    HTML Result
+                    {mode === "markdown-to-html"
+                      ? "HTML Result"
+                      : "Markdown Result"}
                   </p>
 
-                  {html && (
+                  {result && (
                     <button
-                      onClick={copyHtml}
-                      className="rounded-xl bg-orange-500 px-4 py-2 text-xs font-semibold text-black shadow-lg shadow-orange-500/20 transition hover:bg-orange-400 active:scale-95"
+                      onClick={handleCopy}
+                      className="shrink-0 rounded-xl bg-orange-500 px-4 py-2 text-xs font-semibold text-black shadow-lg shadow-orange-500/20 transition hover:bg-orange-400 active:scale-95"
                     >
-                      {copied ? "✓ Copied" : "📋 Copy HTML"}
+                      {copied ? "✓ Copied" : "📋 Copy"}
                     </button>
                   )}
                 </div>
 
-                <div className="min-h-[320px] overflow-auto rounded-2xl border border-orange-400/10 bg-[#050505] p-5">
+                {/* FIXED RESULT BOX */}
 
-                  {html ? (
+                <div className="h-[320px] overflow-y-auto rounded-2xl border border-orange-400/10 bg-[#050505] p-5">
+
+                  {result ? (
                     <pre className="whitespace-pre-wrap break-words font-mono text-xs leading-7 text-orange-100 sm:text-sm">
-                      {html}
+                      {result}
                     </pre>
                   ) : (
                     <p className="text-sm leading-7 text-zinc-700">
-                      Your generated HTML will appear here...
+                      Your converted result will appear here...
                     </p>
                   )}
 
@@ -367,35 +527,36 @@ Write your markdown here...
             <div className="mt-5 flex flex-col gap-3 sm:flex-row">
 
               <button
-                onClick={convertMarkdown}
+                onClick={handleConvert}
                 className="h-14 flex-1 rounded-2xl bg-orange-500 px-7 text-sm font-bold text-black shadow-xl shadow-orange-500/20 transition duration-300 hover:-translate-y-0.5 hover:bg-orange-400 active:scale-[0.98]"
               >
-                ✨ Convert to HTML
+                ✨ Convert
               </button>
 
               <button
-                onClick={clearAll}
+                onClick={handleClear}
                 className="h-14 rounded-2xl border border-white/10 bg-white/[0.04] px-8 text-sm font-semibold text-zinc-300 transition hover:bg-white/[0.08] hover:text-white active:scale-[0.98]"
               >
                 Clear
               </button>
+
             </div>
 
             <p className="mt-3 text-left text-xs text-zinc-600">
               Conversion happens directly in your browser.
             </p>
+
           </div>
         </div>
       </section>
 
-      {/* ========================================================= */}
       {/* FEATURES */}
-      {/* ========================================================= */}
 
       <section
         id="features"
         className="relative z-10 mx-auto w-full max-w-6xl scroll-mt-10 px-5 py-24 sm:px-8"
       >
+
         <div className="mx-auto max-w-2xl text-center">
 
           <div className="mx-auto inline-flex rounded-full border border-orange-400/10 bg-orange-500/5 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-orange-400">
@@ -403,16 +564,16 @@ Write your markdown here...
           </div>
 
           <h2 className="mt-5 text-3xl font-bold tracking-tight text-white sm:text-4xl">
-            Markdown to HTML,{" "}
+            Convert in{" "}
             <span className="text-orange-400">
-              simplified.
+              either direction.
             </span>
           </h2>
 
           <p className="mt-4 text-sm leading-7 text-zinc-500">
-            A lightweight converter built for quick and convenient
-            Markdown-to-HTML workflows.
+            A lightweight converter for everyday Markdown and HTML workflows.
           </p>
+
         </div>
 
         <div className="mt-12 grid gap-5 md:grid-cols-3">
@@ -421,14 +582,14 @@ Write your markdown here...
             icon="⚡"
             number="01"
             title="Instant Conversion"
-            description="Turn Markdown into HTML immediately without unnecessary processing."
+            description="Convert your content immediately without unnecessary processing."
           />
 
           <FeatureCard
-            icon="💻"
+            icon="↔️"
             number="02"
-            title="Developer Friendly"
-            description="Generate clean HTML that you can easily copy into your projects."
+            title="Two-Way Conversion"
+            description="Switch between Markdown to HTML and HTML to Markdown whenever you need."
           />
 
           <FeatureCard
@@ -441,14 +602,13 @@ Write your markdown here...
         </div>
       </section>
 
-      {/* ========================================================= */}
       {/* HOW TO USE */}
-      {/* ========================================================= */}
 
       <section
         id="how"
         className="relative z-10 mx-auto w-full max-w-6xl scroll-mt-10 px-5 py-24 sm:px-8"
       >
+
         <div className="mx-auto max-w-2xl text-center">
 
           <div className="mx-auto inline-flex rounded-full border border-orange-400/10 bg-orange-500/5 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-orange-400">
@@ -460,7 +620,7 @@ Write your markdown here...
           </h2>
 
           <p className="mt-4 text-sm leading-7 text-zinc-500">
-            Convert your Markdown into usable HTML in seconds.
+            Convert your content in seconds.
           </p>
 
         </div>
@@ -469,33 +629,32 @@ Write your markdown here...
 
           <StepCard
             number="01"
-            title="Write Markdown"
-            description="Enter or paste your Markdown content into the editor."
+            title="Choose Direction"
+            description="Select Markdown to HTML or HTML to Markdown."
           />
 
           <StepCard
             number="02"
-            title="Convert"
-            description="Click the convert button to generate the corresponding HTML."
+            title="Enter Content"
+            description="Paste or write your content in the input editor."
           />
 
           <StepCard
             number="03"
-            title="Copy HTML"
-            description="Copy the generated HTML and use it anywhere in your project."
+            title="Copy Result"
+            description="Convert instantly and copy the generated result."
           />
 
         </div>
       </section>
 
-      {/* ========================================================= */}
       {/* FAQ */}
-      {/* ========================================================= */}
 
       <section
         id="faq"
         className="relative z-10 mx-auto w-full max-w-3xl scroll-mt-10 px-5 py-24 sm:px-8"
       >
+
         <div className="text-center">
 
           <div className="mx-auto inline-flex rounded-full border border-orange-400/10 bg-orange-500/5 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-orange-400">
@@ -511,26 +670,24 @@ Write your markdown here...
         <div className="mt-10 space-y-4">
 
           <Faq
-            question="What is Markdown?"
-            answer="Markdown is a lightweight markup language used to format text with simple syntax."
+            question="Can I convert both ways?"
+            answer="Yes. You can convert Markdown to HTML or HTML back to Markdown."
           />
 
           <Faq
-            question="What does this converter generate?"
-            answer="It converts common Markdown elements such as headings, paragraphs, lists, links, emphasis and code into HTML."
+            question="Is my content uploaded?"
+            answer="No. Conversion happens directly inside your browser."
           />
 
           <Faq
-            question="Is my Markdown uploaded?"
-            answer="No. The conversion happens directly inside your browser."
+            question="What Markdown elements are supported?"
+            answer="The converter supports common headings, paragraphs, bold, italic, links, lists, blockquotes, inline code and code blocks."
           />
 
         </div>
       </section>
 
-      {/* ========================================================= */}
       {/* CTA */}
-      {/* ========================================================= */}
 
       <section className="relative z-10 mx-auto w-full max-w-5xl px-5 py-20 sm:px-8">
 
@@ -541,7 +698,7 @@ Write your markdown here...
           <div className="relative">
 
             <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-orange-400/20 bg-orange-500/10 text-2xl shadow-lg shadow-orange-500/10">
-              {"</>"}
+              ↔️
             </div>
 
             <p className="mt-6 text-xs font-semibold uppercase tracking-[0.25em] text-orange-400">
@@ -549,12 +706,12 @@ Write your markdown here...
             </p>
 
             <h2 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-4xl">
-              Markdown in. HTML out.
+              Markdown ↔ HTML. Done.
             </h2>
 
             <p className="mx-auto mt-4 max-w-xl text-sm leading-7 text-zinc-500">
-              Convert your Markdown into clean, usable HTML without
-              unnecessary complexity.
+              Convert your content in either direction without unnecessary
+              complexity.
             </p>
 
             <button
@@ -572,9 +729,7 @@ Write your markdown here...
         </div>
       </section>
 
-      {/* ========================================================= */}
       {/* FOOTER */}
-      {/* ========================================================= */}
 
       <footer className="relative z-10 border-t border-white/5 px-5 py-10">
 
@@ -623,6 +778,22 @@ Write your markdown here...
       </footer>
     </main>
   );
+}
+
+/* ============================================================= */
+/* HELPERS */
+/* ============================================================= */
+
+function stripTags(value: string) {
+  return value.replace(/<[^>]*>/g, "");
+}
+
+function decodeHtmlEntities(value: string) {
+  if (typeof window === "undefined") return value;
+
+  const textarea = document.createElement("textarea");
+  textarea.innerHTML = value;
+  return textarea.value;
 }
 
 /* ============================================================= */
