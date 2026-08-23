@@ -524,20 +524,23 @@ Write your Markdown here...
 
             {/* ACTIONS */}
 
-           <div className="flex flex-col gap-3 sm:flex-row">
+           {/* Actions */}
+<div className="mt-5 flex w-full flex-col gap-4">
+
   <button
     onClick={handleConvert}
-    className="flex h-16 w-full flex-1 items-center justify-center rounded-2xl bg-orange-500 px-6 text-base font-semibold text-black shadow-xl shadow-orange-500/20 transition duration-300 hover:-translate-y-0.5 hover:bg-orange-400 active:scale-[0.98]"
+    className="w-full min-h-[64px] rounded-2xl bg-orange-500 px-6 py-4 text-lg font-bold text-black shadow-xl shadow-orange-500/25 transition duration-300 hover:-translate-y-0.5 hover:bg-orange-400 active:scale-[0.98]"
   >
     ✨ Convert
   </button>
 
   <button
     onClick={handleClear}
-    className="flex h-16 w-full flex-1 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.04] px-6 text-base font-semibold text-zinc-300 transition hover:bg-white/[0.08] hover:text-white active:scale-[0.98]"
+    className="w-full min-h-[64px] rounded-2xl border border-white/10 bg-white/[0.05] px-6 py-4 text-lg font-bold text-zinc-200 shadow-lg transition hover:bg-white/[0.09] hover:text-white active:scale-[0.98]"
   >
     Clear
   </button>
+
 </div>
 
             <p className="mt-3 text-left text-xs text-zinc-600">
