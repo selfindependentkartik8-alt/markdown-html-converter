@@ -524,23 +524,21 @@ Write your Markdown here...
 
             {/* ACTIONS */}
 
-            <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+           <div className="flex flex-col gap-3 sm:flex-row">
+  <button
+    onClick={handleConvert}
+    className="flex h-16 w-full flex-1 items-center justify-center rounded-2xl bg-orange-500 px-6 text-base font-semibold text-black shadow-xl shadow-orange-500/20 transition duration-300 hover:-translate-y-0.5 hover:bg-orange-400 active:scale-[0.98]"
+  >
+    ✨ Convert
+  </button>
 
-              <button
-  onClick={handleConvert}
-  className="h-14 w-full flex-1 rounded-2xl bg-orange-500 px-7 text-sm font-semibold text-black shadow-xl shadow-orange-500/20 transition duration-300 hover:-translate-y-0.5 hover:bg-orange-400 active:scale-[0.98]"
->
-  ✨ Convert
-</button>
-
-              <button
-                onClick={handleClear}
-                className="h-14 rounded-2xl border border-white/10 bg-white/[0.04] px-8 text-sm font-semibold text-zinc-300 transition hover:bg-white/[0.08] hover:text-white active:scale-[0.98]"
-              >
-                Clear
-              </button>
-
-            </div>
+  <button
+    onClick={handleClear}
+    className="flex h-16 w-full flex-1 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.04] px-6 text-base font-semibold text-zinc-300 transition hover:bg-white/[0.08] hover:text-white active:scale-[0.98]"
+  >
+    Clear
+  </button>
+</div>
 
             <p className="mt-3 text-left text-xs text-zinc-600">
               Conversion happens directly in your browser.
