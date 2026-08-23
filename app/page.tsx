@@ -527,11 +527,11 @@ Write your Markdown here...
             <div className="mt-5 flex flex-col gap-3 sm:flex-row">
 
               <button
-                onClick={handleConvert}
-                className="h-14 flex-1 rounded-2xl bg-orange-500 px-7 text-sm font-bold text-black shadow-xl shadow-orange-500/20 transition duration-300 hover:-translate-y-0.5 hover:bg-orange-400 active:scale-[0.98]"
-              >
-                ✨ Convert
-              </button>
+  onClick={handleConvert}
+  className="h-14 w-full flex-1 rounded-2xl bg-orange-500 px-7 text-sm font-semibold text-black shadow-xl shadow-orange-500/20 transition duration-300 hover:-translate-y-0.5 hover:bg-orange-400 active:scale-[0.98]"
+>
+  ✨ Convert
+</button>
 
               <button
                 onClick={handleClear}
