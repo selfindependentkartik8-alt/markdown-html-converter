@@ -730,53 +730,151 @@ Write your Markdown here...
         </div>
       </section>
 
-      {/* FOOTER */}
+{/* ================================================= */}
+{/* FOOTER */}
+{/* ================================================= */}
 
-      <footer className="relative z-10 border-t border-white/5 px-5 py-10">
+<footer className="relative z-10 border-t border-white/5 px-5 py-10">
+  <div className="mx-auto max-w-6xl">
 
-        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-7 sm:flex-row">
+    {/* Related Tools */}
+    <div className="mb-10 text-center">
+      <p className="text-xs font-semibold uppercase tracking-[0.2em] text-orange-400">
+        Explore More
+      </p>
 
-          <div className="flex items-center gap-3">
+      <h3 className="mt-2 text-xl font-bold text-white">
+        More Developer & Writing Tools
+      </h3>
 
-            <img
-              src="/logo.png"
-              alt="KrishAIWorks Logo"
-              className="h-12 w-12 rounded-full border border-orange-400/20 object-cover shadow-lg shadow-orange-500/10"
-            />
+      <p className="mx-auto mt-2 max-w-xl text-sm text-zinc-500">
+        Explore more useful developer, writing, and productivity tools
+        from KrishAIWorks.
+      </p>
+    </div>
 
-            <div>
-              <p className="font-semibold text-white">
-                KrishAIWorks
-              </p>
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
 
-              <p className="mt-1 text-xs text-zinc-600">
-                AI Solutions That Work
-              </p>
-            </div>
-
-          </div>
-
-          <a
-            href="https://instagram.com/KrishAIWorks"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-sm text-zinc-500 transition hover:text-orange-400"
-          >
-            Instagram · @KrishAIWorks
-          </a>
-
-          <div className="text-center sm:text-right">
-            <p className="text-xs text-zinc-600">
-              © 2026 KrishAIWorks
-            </p>
-
-            <p className="mt-1 text-xs text-zinc-700">
-              Built with AI.
-            </p>
-          </div>
-
+      {/* JSON Formatter & Validator */}
+      <a
+        href="https://jsonformattervalidator.krishaiworks.com/"
+        className="group rounded-2xl border border-orange-400/10 bg-white/[0.03] p-5 transition-all duration-300 hover:border-orange-400/30 hover:bg-orange-400/[0.05]"
+      >
+        <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl border border-orange-400/20 bg-orange-400/10 text-lg">
+          {"{}"}
         </div>
-      </footer>
+
+        <h4 className="font-semibold text-white transition-colors group-hover:text-orange-400">
+          JSON Formatter & Validator
+        </h4>
+
+        <p className="mt-2 text-xs leading-5 text-zinc-500">
+          Format, validate, and clean JSON data instantly.
+        </p>
+      </a>
+
+      {/* Base64 Encoder & Decoder */}
+      <a
+        href="https://base64encoderdecoder.krishaiworks.com/"
+        className="group rounded-2xl border border-orange-400/10 bg-white/[0.03] p-5 transition-all duration-300 hover:border-orange-400/30 hover:bg-orange-400/[0.05]"
+      >
+        <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl border border-orange-400/20 bg-orange-400/10 text-lg">
+          🔐
+        </div>
+
+        <h4 className="font-semibold text-white transition-colors group-hover:text-orange-400">
+          Base64 Encoder & Decoder
+        </h4>
+
+        <p className="mt-2 text-xs leading-5 text-zinc-500">
+          Encode and decode Base64 text quickly and easily.
+        </p>
+      </a>
+
+      {/* Word Counter & Reading Time */}
+      <a
+        href="https://wordcounterreadingtime.krishaiworks.com/"
+        className="group rounded-2xl border border-orange-400/10 bg-white/[0.03] p-5 transition-all duration-300 hover:border-orange-400/30 hover:bg-orange-400/[0.05]"
+      >
+        <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl border border-orange-400/20 bg-orange-400/10 text-lg">
+          🔢
+        </div>
+
+        <h4 className="font-semibold text-white transition-colors group-hover:text-orange-400">
+          Word Counter & Reading Time
+        </h4>
+
+        <p className="mt-2 text-xs leading-5 text-zinc-500">
+          Count words, characters, and estimate reading time instantly.
+        </p>
+      </a>
+
+      {/* AI Text Humanizer */}
+      <a
+        href="https://aitexthumanizer.krishaiworks.com/"
+        className="group rounded-2xl border border-orange-400/10 bg-white/[0.03] p-5 transition-all duration-300 hover:border-orange-400/30 hover:bg-orange-400/[0.05]"
+      >
+        <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl border border-orange-400/20 bg-orange-400/10 text-lg">
+          ✍️
+        </div>
+
+        <h4 className="font-semibold text-white transition-colors group-hover:text-orange-400">
+          AI Text Humanizer
+        </h4>
+
+        <p className="mt-2 text-xs leading-5 text-zinc-500">
+          Make AI-generated content sound more natural and human.
+        </p>
+      </a>
+
+    </div>
+
+    {/* Main Footer */}
+    <div className="mt-10 flex flex-col items-center justify-between gap-7 border-t border-white/5 pt-8 sm:flex-row">
+
+      <div className="flex items-center gap-3">
+
+        <img
+          src="/logo.png"
+          alt="KrishAIWorks Logo"
+          className="h-12 w-12 rounded-full border border-orange-400/20 object-cover shadow-lg shadow-orange-500/10"
+        />
+
+        <div>
+          <p className="font-semibold text-white">
+            KrishAIWorks
+          </p>
+
+          <p className="mt-1 text-xs text-zinc-600">
+            AI Solutions That Work
+          </p>
+        </div>
+
+      </div>
+
+      <a
+        href="https://instagram.com/KrishAIWorks"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-sm text-zinc-500 transition hover:text-orange-400"
+      >
+        Instagram · @KrishAIWorks
+      </a>
+
+      <div className="text-center sm:text-right">
+        <p className="text-xs text-zinc-600">
+          © {new Date().getFullYear()} KrishAIWorks
+        </p>
+
+        <p className="mt-1 text-xs text-zinc-700">
+          Built with AI.
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+</footer>
     </main>
   );
 }
