@@ -71,6 +71,72 @@ export const metadata: Metadata = {
   },
 };
 
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://krishaiworks.com/#organization",
+      name: "KrishAIWorks",
+      url: "https://krishaiworks.com",
+      logo: {
+        "@type": "ImageObject",
+        url: "https://krishaiworks.com/logo.png",
+        width: 512,
+        height: 512,
+      },
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://krishaiworks.com/#website",
+      url: "https://krishaiworks.com",
+      name: "KrishAIWorks",
+      description:
+        "AI-powered tools, productivity utilities, automation, chatbots, websites and custom digital solutions.",
+      publisher: {
+        "@id": "https://krishaiworks.com/#organization",
+      },
+      inLanguage: "en",
+    },
+    {
+      "@type": "WebApplication",
+      "@id":
+        "https://markdownhtmlconverter.krishaiworks.com/#webapplication",
+      name: "Markdown to HTML Converter",
+      url: "https://markdownhtmlconverter.krishaiworks.com/",
+      description:
+        "Convert Markdown to HTML online quickly and easily with the free Markdown to HTML Converter by KrishAIWorks. Transform Markdown into clean HTML instantly.",
+      applicationCategory: "DeveloperApplication",
+      operatingSystem: "Any",
+      browserRequirements: "Requires a modern web browser.",
+      isPartOf: {
+        "@id": "https://krishaiworks.com/#website",
+      },
+      publisher: {
+        "@id": "https://krishaiworks.com/#organization",
+      },
+    },
+    {
+      "@type": "WebPage",
+      "@id":
+        "https://markdownhtmlconverter.krishaiworks.com/#webpage",
+      url: "https://markdownhtmlconverter.krishaiworks.com/",
+      name:
+        "Markdown to HTML Converter | Convert Markdown to HTML Online",
+      description:
+        "Convert Markdown to HTML online quickly and easily with the free Markdown to HTML Converter by KrishAIWorks. Transform Markdown into clean HTML instantly.",
+      isPartOf: {
+        "@id": "https://krishaiworks.com/#website",
+      },
+      about: {
+        "@id":
+          "https://markdownhtmlconverter.krishaiworks.com/#webapplication",
+      },
+      inLanguage: "en",
+    },
+  ],
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -80,6 +146,13 @@ export default function RootLayout({
     <html lang="en">
       <body>
         {children}
+
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(jsonLd),
+          }}
+        />
 
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-BS6TSMM1ZR"
