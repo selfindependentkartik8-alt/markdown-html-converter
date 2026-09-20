@@ -830,50 +830,68 @@ Write your Markdown here...
     </div>
 
     {/* Main Footer */}
-    <div className="mt-10 flex flex-col items-center justify-between gap-7 border-t border-white/5 pt-8 sm:flex-row">
+<div className="mt-10 flex flex-col items-center justify-between gap-7 border-t border-white/5 pt-8 sm:flex-row">
 
-      <div className="flex items-center gap-3">
+  <div className="flex items-center gap-3">
 
-        <img
-          src="/logo.png"
-          alt="KrishAIWorks Logo"
-          className="h-12 w-12 rounded-full border border-orange-400/20 object-cover shadow-lg shadow-orange-500/10"
-        />
+    <img
+      src="/logo.png"
+      alt="KrishAIWorks Logo"
+      className="h-12 w-12 rounded-full border border-orange-400/20 object-cover shadow-lg shadow-orange-500/10"
+    />
 
-        <div>
-          <p className="font-semibold text-white">
-            KrishAIWorks
-          </p>
+    <div>
+      <p className="font-semibold text-white">
+        KrishAIWorks
+      </p>
 
-          <p className="mt-1 text-xs text-zinc-600">
-            AI Solutions That Work
-          </p>
-        </div>
-
-      </div>
-
-      <a
-        href="https://instagram.com/KrishAIWorks"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-sm text-zinc-500 transition hover:text-orange-400"
-      >
-        Instagram · @KrishAIWorks
-      </a>
-
-      <div className="text-center sm:text-right">
-        <p className="text-xs text-zinc-600">
-          © {new Date().getFullYear()} KrishAIWorks
-        </p>
-
-        <p className="mt-1 text-xs text-zinc-700">
-          Built with AI.
-        </p>
-      </div>
-
+      <p className="mt-1 text-xs text-zinc-600">
+        AI Solutions That Work
+      </p>
     </div>
 
   </div>
+
+  <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
+
+    <a
+      href="https://instagram.com/KrishAIWorks"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="text-sm text-zinc-500 transition hover:text-orange-400"
+    >
+      Instagram · @KrishAIWorks
+    </a>
+
+    <a
+      href="https://krishaiworks.com/privacy-policy"
+      className="text-xs text-zinc-600 transition hover:text-orange-400"
+    >
+      Privacy Policy
+    </a>
+
+    <a
+      href="https://krishaiworks.com/terms-and-conditions"
+      className="text-xs text-zinc-600 transition hover:text-orange-400"
+    >
+      Terms & Conditions
+    </a>
+
+  </div>
+
+  <div className="text-center sm:text-right">
+    <p className="text-xs text-zinc-600">
+      © {new Date().getFullYear()} KrishAIWorks
+    </p>
+
+    <p className="mt-1 text-xs text-zinc-700">
+      Built with AI.
+    </p>
+  </div>
+
+</div>
+
+</div>
 </footer>
     </main>
   );
